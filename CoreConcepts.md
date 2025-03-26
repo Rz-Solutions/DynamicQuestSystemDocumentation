@@ -115,7 +115,7 @@ Interfaces define contracts for different parts of the system, allowing for cust
 *   **`IQuestProgress`:** Defines the contract for managing a player's quest progression.
     *   Implemented by: `UPlayerQuestSubsystem`.
     *   Key Methods: `AcceptQuest`, `AbandonQuest`, `CompleteQuest`, `FailQuest`, `RegisterObjectiveProgress`, `GetActiveQuests`, `HasActiveQuest`.
-*   **`IQuestObjectiveHandler`:** (Interface provided, but no concrete implementation shown in the files).
+*   **`IQuestObjectiveHandler`:**.
     *   **Purpose:** Designed to allow different objects or systems to process gameplay events and determine if they contribute to specific objective types. A theoretical `KillObjectiveHandler` might subscribe to enemy death events and call `RegisterObjectiveProgress` on the `PlayerQuestSubsystem`.
     *   Key Methods: `CanHandleObjectiveType`, `ProcessEvent`, `GetHandlerName`.
 
