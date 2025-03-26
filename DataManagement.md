@@ -66,5 +66,3 @@ This format is relatively compact and efficient for loading/saving large amounts
 *   **Editor Quest Data (Default):** `[Project]/Saved/Quests/EditorQuests.bin` (Used by the Quest Editor window for its working copy). File location can be changed via Save As/Load As dialogs.
 *   **Runtime Quest Data (Shipped):** `[Engine]/Binaries/[Platform]/Quests/RuntimeQuests.bin` (This is the file the game actually loads definitions from at runtime). Exported via the "Export to Runtime" button in the editor.
 *   **Player Progress Data:** `[Project]/Saved/Quests/Progress/[PlayerID].bin` (e.g., `Player_0.bin`).
-
-**Note:** The `DefaultQuestsPath` in the `.ini` seems misleadingly named/defaulted in the provided code (`/Game/Quests`). It's typically used by `UBinaryQuestDataSource` relative to the `Saved` directory, unless `GetFullPath` is overridden or a different data source is used. The editor subsystem explicitly manages `EditorQuests.bin` and the runtime export targets the Engine binaries directory.
