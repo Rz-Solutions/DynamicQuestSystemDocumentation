@@ -7,7 +7,6 @@ The plugin includes a dedicated editor window built with Slate for creating, edi
 You can open the Quest Editor window in two ways:
 
 1.  **Toolbar:** Click the "Quests" icon added to the main editor toolbar (usually near the Play button).
-    ![Toolbar Icon](placeholder_toolbar.png) <!-- Replace with actual image -->
 2.  **Menu Bar:** Go to `Window -> Quest Editor`.
 
 ## Editor Subsystem (`UDynamicQuestSystemEditorSubsystem`)
