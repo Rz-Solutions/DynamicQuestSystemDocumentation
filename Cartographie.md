@@ -1,6 +1,6 @@
 **Cartographie Technique du Système de Quêtes pour Extension Blueprint**
 
-Ce document détaille l'architecture clé du système de quêtes pour permettre son extension via des classes Blueprint, en se basant sur l'analyse des headers C++.
+Ce document détaille l'architecture clé du quest system pour extension via BP.
 
 **I. `UQuestObjectiveBase` (Classe Parente pour Objectifs BP)**
 
