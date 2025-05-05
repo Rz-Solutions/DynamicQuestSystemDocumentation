@@ -54,9 +54,13 @@ Ce document détaille l'architecture clé du quest system pour extension via BP.
     *   **Modification d'État :**
         *   `AcceptQuest(QuestID)`
         *   `AbandonQuest(QuestID)`
+        *   `CompleteQuest(QuestID)` : **(Server-only)** Tente de marquer la quête comme complétée.
+        *   `FailQuest(QuestID)` : **(Server-only)** Tente de marquer la quête comme échouée.
         *   `UpdateQuestObjectiveProgress(QuestID, ObjectiveID, Progress)` : **Crucial, à appeler depuis l'objectif BP.**
         *   `SetQuestTracked(QuestID, bTracked)`
+        *   `SetPlayerID(InPlayerID)` : Associe ce composant à un ID de joueur spécifique.
     *   **Lecture d'État :**
+        *   `GetPlayerID()` : Retourne le `FName` du joueur associé.
         *   `GetQuestState(QuestID)` : Retourne `EQuestStateType`.
         *   `GetObjectiveProgress(QuestID, ObjectiveID)` : Retourne `int32`.
         *   `IsQuestTracked(QuestID)`
@@ -65,6 +69,8 @@ Ce document détaille l'architecture clé du quest system pour extension via BP.
         *   `GetQuestDefinitionData(QuestID, &OutQuestDefinition)` : Pour définition statique (`FQuestDefinition`).
         *   `GetQuestTitle(QuestID)`, `GetQuestDescription(QuestID)` : Retournent `FText`.
         *   `GetQuestModularObjectives(QuestID)` : Retourne `TArray<UQuestObjectiveBase*>`.
+        *   `GetQuestCompletionPercentage(QuestID)` : Retourne un `float` (0-100) basé sur les objectifs non optionnels.
+        *   `IsComponentValid()` : Retourne `bool` (Indique si le composant est prêt et associé à un joueur valide).
 *   **Événements à Écouter (`BlueprintAssignable` Delegates pour UI/Logique Réactive) :**
     *   `OnQuestObjectiveUpdated(QuestID, ObjectiveID)`
     *   `OnQuestObjectiveCompleted(QuestID, ObjectiveID)`
@@ -72,7 +78,8 @@ Ce document détaille l'architecture clé du quest system pour extension via BP.
     *   `OnQuestCompleted(QuestID)`
     *   `OnQuestFailed(QuestID)`
     *   `OnQuestAbandoned(QuestID)`
-    *   `OnQuestTrackingChanged(QuestID, bIsTracked)`
+    *   `OnPlayerQuestTrackingChangedEvent(QuestID, bIsTracked)`
+    *   `OnQuestComponentValidityChanged(bIsValid)` : **Déclenché quand l'état de validité du composant change.**
 
 **V. Structs & Enums Clés (Exposés en BP via `QuestDataTypes.h`)**
 
