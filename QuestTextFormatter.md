@@ -8,6 +8,8 @@
 - ✅ **Smooth animations** available
 - ✅ **Blueprint compatible** without complexity
 - ✅ **Automatic category banners**
+- ✅ **Text wrapping** fixed for long descriptions
+- ✅ **Individual widget components** for maximum flexibility
 
 ## 🎮 Blueprint Usage
 
@@ -38,7 +40,22 @@ In your UMG widget:
 | **Create Quest Accept Dialog Widget** | Quest acceptance dialog | `QuestData`, `FontSize` | `Vertical Box` |
 | **Create Quest Completion Dialog Widget** | Quest completion dialog | `QuestData`, `FontSize` | `Vertical Box` |
 | **Create Formatted Text Widget** | Custom formatted text | `FormattedText`, `FontSize` | `Vertical Box` |
+
+### 🧩 Individual Component Functions
+
+| Blueprint Function | Description | Parameters | Return Type |
+|---|---|---|---|
 | **Create BlenderPro Text Widget** | Simple text with BlenderPro font | `Text`, `FontSize`, `IsBold`, `TextColor` | `Text Block` |
+| **Create Text Chunk Widget** | Widget from individual text chunk | `Chunk`, `FontSize` | `Widget` |
+| **Create Icon Widget** | Creates icon widget | `IconName`, `IconSize` | `Image` |
+| **Create Category Banner Widget** | Creates styled banner text | `BannerText` | `Widget` |
+
+### 🔧 Text Chunk Creation Functions
+
+| Blueprint Function | Description | Parameters | Return Type |
+|---|---|---|---|
+| **Create Text Chunk** | Creates formatted text chunk | `Text`, `IsBold`, `IsItalic`, `TextColor` | `Text Format Chunk` |
+| **Create Icon Chunk** | Creates icon chunk | `IconName` | `Text Format Chunk` |
 
 ### 📝 Text Parsing & Analysis Functions
 
@@ -47,6 +64,9 @@ In your UMG widget:
 | **Parse Formatted Text** | Breaks formatted text into chunks | `FormattedText` | `Array<FTextFormatChunk>` |
 | **Get Quest Accept Dialog Text** | Gets raw acceptance dialog text | `QuestData` | `String` |
 | **Get Quest Completion Dialog Text** | Gets raw completion dialog text | `QuestData` | `String` |
+| **Get Color From Name** | Gets color by name (Red, Green, etc.) | `ColorName` | `Linear Color` |
+| **Check If Text Contains Tag** | Checks if text contains specific tag | `Text`, `TagName` | `Boolean` |
+| **Extract Tag Content** | Extracts content from markup tags | `Text`, `TagName` | `String` |
 
 ### 🎨 Styling & Animation Functions
 
@@ -56,16 +76,20 @@ In your UMG widget:
 | **Get BlenderPro Font** | Gets BlenderPro font info | `FontSize`, `IsBold`, `IsItalic` | `Slate Font Info` |
 | **Load Icon Texture** | Loads quest icon texture | `IconName` | `Texture 2D` |
 
-### 🔧 Advanced Functions (C++ or Advanced Users)
+### 🔧 Advanced Functions (C++ Only - Require UWidgetTree)
 
-| Blueprint Function | Description | Parameters | Return Type |
+| C++ Function | Description | Parameters | Return Type |
 |---|---|---|---|
-| **Format Quest Description** | Advanced quest description | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
-| **Format Quest Rewards** | Advanced quest rewards | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
-| **Create Formatted Text** | Advanced formatted text | `FormattedText`, `WidgetTree`, `FontSize` | `Widget` |
-| **Create BlenderPro Text Block** | Advanced text block | `Text`, `WidgetTree`, `FontSize`, `IsBold`, `TextColor` | `Text Block` |
-| **Format Quest Accept Dialog** | Advanced accept dialog | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
-| **Format Quest Completion Dialog** | Advanced completion dialog | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateQuestDescriptionWidget** | Advanced quest description | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateQuestRewardsWidget** | Advanced quest rewards | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateFormattedTextWidget** | Advanced formatted text | `FormattedText`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateBlenderProTextBlock** | Advanced text block | `Text`, `WidgetTree`, `FontSize`, `IsBold`, `TextColor` | `Text Block` |
+| **CreateQuestAcceptDialogWidget** | Advanced accept dialog | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateQuestCompletionDialogWidget** | Advanced completion dialog | `QuestData`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateTextChunkWidget** | Advanced text chunk widget | `Chunk`, `WidgetTree`, `FontSize` | `Widget` |
+| **CreateIconWidget** | Advanced icon widget | `IconName`, `WidgetTree`, `IconSize` | `Image` |
+| **CreateCategoryBanner** | Advanced category banner | `BannerText`, `WidgetTree` | `Widget` |
+| **CreateFormattedTextWidgetBP** | Advanced formatted text (BP wrapper) | `FormattedText`, `WidgetTree`, `FontSize` | `Widget` |
 
 ## 🏗️ FTextFormatChunk Structure
 
@@ -95,7 +119,31 @@ The **FTextFormatChunk** struct contains parsed text information:
                                                                [QuestDescriptionContainer]
 ```
 
-### Example 2: Text Parsing & Analysis
+### Example 2: Individual Components
+
+```blueprint
+[String: "Mission Briefing"] ──► [Create Category Banner Widget] ──► [Add Child to Vertical Box]
+                                                                               │
+[String: "icon_contract"] ────► [Create Icon Widget] ─────────────► [Add Child to Horizontal Box]
+                                                                               │
+[String: "Important quest!"] ──► [Create BlenderPro Text Widget] ──► [Add Child to Horizontal Box]
+```
+
+### Example 3: Creating Custom Text Chunks
+
+```blueprint
+[String: "Hello World"] ──► [Create Text Chunk] ──► [Text Chunk] ──► [Create Text Chunk Widget]
+[Boolean: true] ────────► [Is Bold]                                            │
+[Boolean: false] ───────► [Is Italic]                                          ▼
+[Linear Color: Red] ────► [Text Color]                                  [Text Widget]
+
+[String: "icon_credits"] ──► [Create Icon Chunk] ──► [Icon Chunk] ──► [Create Text Chunk Widget]
+                                                                               │
+                                                                               ▼
+                                                                        [Icon Widget]
+```
+
+### Example 4: Text Parsing & Analysis
 
 ```blueprint
 [String: "<Bold>Hello</Bold> <Red>World</Red>"] ──► [Parse Formatted Text]
@@ -104,10 +152,22 @@ The **FTextFormatChunk** struct contains parsed text information:
                                                     [Array of Text Chunks] ──► [For Each Loop]
                                                                                       │
                                                                                       ▼
-                                                                               [Process Each Chunk]
+                                                                               [Create Text Chunk Widget]
 ```
 
-### Example 3: Custom Animation
+### Example 5: Color and Tag Utilities
+
+```blueprint
+[String: "Red"] ──────► [Get Color From Name] ──► [Linear Color: Red]
+
+[String: "<Bold>Test</Bold>"] ──► [Check If Text Contains Tag] ──► [Boolean: true]
+[String: "Bold"] ─────────────► [Tag Name]
+
+[String: "<Bold>Content</Bold>"] ──► [Extract Tag Content] ──► [String: "Content"]
+[String: "Bold"] ────────────────► [Tag Name]
+```
+
+### Example 6: Custom Animation
 
 ```blueprint
 [Create BlenderPro Text Widget] ──► [Text Widget] ──► [Add Fade In Animation]
@@ -116,7 +176,7 @@ The **FTextFormatChunk** struct contains parsed text information:
                                                     [Delay: 0.5] ────► [Delay]
 ```
 
-### Example 4: Icon Loading
+### Example 7: Icon Loading
 
 ```blueprint
 [String: "icon_contract"] ──► [Load Icon Texture] ──► [Texture] ──► [Set Brush From Texture]
@@ -124,7 +184,7 @@ The **FTextFormatChunk** struct contains parsed text information:
                                                                      [Image Widget]
 ```
 
-### Example 5: Custom Font Usage
+### Example 8: Custom Font Usage
 
 ```blueprint
 [Float: 18.0] ────► [Get BlenderPro Font] ──► [Font Info] ──► [Set Font]
@@ -160,7 +220,8 @@ The **FTextFormatChunk** struct contains parsed text information:
 - `<img id="icon_credits"/>` - Credits icon
 - `<img id="icon_experience"/>` - Experience icon
 - `<img id="icon_reputation"/>` - Reputation icon
-- `<img id="icon_item"/>` - Item icon
+- `<img id="icon_repeatable"/>` - Repeatable quest icon
+- `<img id="icon_time_limited"/>` - Time limited quest icon
 
 ## 🛠️ UMG Configuration
 
@@ -203,6 +264,21 @@ Main Panel (Vertical Box)
 | `Format Quest Rewards` → | `Create Quest Rewards Widget` |
 | `Create Rich Text Block` → | `Create BlenderPro Text Widget` |
 | `Parse Rich Text` → | `Parse Formatted Text` |
+| `Create Icon Widget` → | `Create Icon Widget` |
+| `Create Text Chunk` → | `Create Text Chunk` |
+| `Get Text Color` → | `Get Color From Name` |
+
+### New functions you can now use:
+
+| New Function | Use Case |
+|---|---|
+| `Create Text Chunk Widget` | Convert individual chunks to widgets |
+| `Create Icon Widget` | Standalone icon creation |
+| `Create Category Banner Widget` | Section headers and banners |
+| `Create Text Chunk` | Programmatic chunk creation |
+| `Create Icon Chunk` | Programmatic icon chunk creation |
+| `Check If Text Contains Tag` | Text validation and analysis |
+| `Extract Tag Content` | Content extraction from markup |
 
 ## 🔧 Troubleshooting
 
@@ -220,6 +296,15 @@ Main Panel (Vertical Box)
 
 ### Problem: Parse Formatted Text returns empty array
 **Solution**: Check your formatting tags are properly closed (e.g., `<Bold>text</Bold>`)
+
+### Problem: Text doesn't wrap properly
+**Solution**: This has been fixed! All text widgets now automatically wrap text to prevent overflow.
+
+### Problem: Icon chunks not displaying
+**Solution**: Make sure the icon name matches available icons and use `Load Icon Texture` to verify the texture exists.
+
+### Problem: Custom chunks not working
+**Solution**: Use `Create Text Chunk` and `Create Icon Chunk` functions to create valid chunks, then pass them to `Create Text Chunk Widget`.
 
 ## 📖 Complete Examples
 
@@ -251,22 +336,51 @@ Event Begin Play
     │ Duration: 0.6, Delay: 0.2
 ```
 
-### Advanced Text Analysis
+### Advanced Custom Text Builder
 
 ```blueprint
-[String Variable: CustomFormattedText]
+[Array: Custom Text Chunks] ──► [For Each Loop: Text Chunks]
+    │                                   │
+    ▼                                   ▼
+[Clear Children: Container] ──► [Create Text Chunk Widget]
+                                        │ Font Size: 16.0
+                                        ▼
+                                [Add Child to Vertical Box: Container]
+                                        │
+                                        ▼
+                                [Add Fade In Animation]
+                                        │ Duration: 0.3, Delay: (Loop Index * 0.1)
+```
+
+### Dynamic Icon and Text Creation
+
+```blueprint
+[String: "Objective Complete!"] ──► [Create Text Chunk] ──► [Text Chunk]
+[Boolean: true] ────────────────► [Is Bold]                      │
+[Get Color From Name: "Green"] ─► [Text Color]                   ▼
+                                                          [Array Add: Custom Chunks]
+
+[String: "icon_experience"] ───► [Create Icon Chunk] ──► [Icon Chunk]
+                                                                │
+                                                                ▼
+                                                        [Array Add: Custom Chunks]
+
+[For Each: Custom Chunks] ──► [Create Text Chunk Widget] ──► [Add Child to Container]
+```
+
+### Text Analysis and Validation
+
+```blueprint
+[String Variable: User Input Text]
     │
     ▼
-[Parse Formatted Text]
-    │
-    ▼
-[For Each Loop: Text Chunks]
-    │
-    ▼
-[Switch on Chunk Type]
-    ├── [If Is Icon] ──► [Load Icon Texture] ──► [Create Image Widget]
-    ├── [If Is Bold] ──► [Create BlenderPro Text Widget: Bold=True]
-    └── [If Normal] ───► [Create BlenderPro Text Widget: Bold=False]
+[Check If Text Contains Tag: "Bold"] ──► [Branch: Has Bold]
+    │                                           │
+    ▼                                           ▼
+[Extract Tag Content: "Bold"] ──► [String: Bold Content] ──► [Create Text Chunk: Bold=True]
+    │                                                                │
+    ▼                                                                ▼
+[Create Text Chunk Widget] ──────────────────────────► [Add Child to Container]
 ```
 
 ## 🏗️ Technical Implementation
@@ -295,6 +409,16 @@ Event Begin Play
 1. Use **Create Formatted Text Widget** with test string
 2. Add to a Vertical Box in your UMG
 3. Should display formatted text with BlenderPro font
+
+### Icon Test
+1. Use **Create Icon Widget** with `"icon_contract"`
+2. Should return an Image widget with the contract icon
+3. Verify icon loads properly with **Load Icon Texture**
+
+### Chunk Creation Test
+1. Use **Create Text Chunk** with custom parameters
+2. Pass result to **Create Text Chunk Widget**
+3. Should create properly styled text widget
 
 ---
 
