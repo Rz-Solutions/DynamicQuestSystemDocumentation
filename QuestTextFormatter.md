@@ -46,6 +46,7 @@ In your UMG widget:
 | Blueprint Function | Description | Parameters | Return Type |
 |---|---|---|---|
 | **Create BlenderPro Text Widget** | Simple text with BlenderPro font | `Text`, `FontSize`, `IsBold`, `TextColor` | `Text Block` |
+| **Create Typing Text Block** | Text block with typing animation | `Text`, `FontSize`, `IsBold`, `TextColor`, `TypingSpeed`, `Delay` | `Text Block` |
 | **Create Text Chunk Widget** | Widget from individual text chunk | `Chunk`, `FontSize` | `Widget` |
 | **Create Icon Widget** | Creates icon widget | `IconName`, `IconSize` | `Image` |
 | **Create Category Banner Widget** | Creates styled banner text | `BannerText` | `Widget` |
@@ -73,6 +74,7 @@ In your UMG widget:
 | Blueprint Function | Description | Parameters | Return Type |
 |---|---|---|---|
 | **Add Fade In Animation** | Adds fade-in animation to widget | `Widget`, `Duration`, `Delay` | `None` |
+| **Add Typing Animation** | Adds typing animation to text block | `TextBlock`, `FullText`, `TypingSpeed`, `Delay` | `None` |
 | **Get BlenderPro Font** | Gets BlenderPro font info | `FontSize`, `IsBold`, `IsItalic` | `Slate Font Info` |
 | **Load Icon Texture** | Loads quest icon texture | `IconName` | `Texture 2D` |
 
@@ -176,6 +178,27 @@ The **FTextFormatChunk** struct contains parsed text information:
                                                     [Delay: 0.5] ────► [Delay]
 ```
 
+### Example 6b: Typing Animation
+
+```blueprint
+[Create BlenderPro Text Widget] ──► [Text Widget] ──► [Add Typing Animation]
+                                                              │
+                                                    [String: "Welcome to the quest!"] ──► [Full Text]
+                                                    [Float: 0.0125] ────────────────► [Typing Speed]
+                                                    [Float: 0.0] ───────────────────► [Delay]
+```
+
+### Example 6c: Create Text Block with Typing Animation
+
+```blueprint
+[String: "Quest completed!"] ──► [Create Typing Text Block] ──► [Text Widget] ──► [Add Child to Container]
+[Float: 18.0] ──────────────► [Font Size]
+[Boolean: true] ────────────► [Is Bold]
+[Linear Color: Green] ──────► [Text Color]
+[Float: 0.0125] ────────────► [Typing Speed]
+[Float: 1.0] ───────────────► [Delay]
+```
+
 ### Example 7: Icon Loading
 
 ```blueprint
@@ -237,14 +260,14 @@ Main Panel (Vertical Box)
 
 ## ⚡ Recommended Parameters
 
-| Usage | Font Size | Animation Duration |
-|---|---|---|
-| Quest title | 24.0 | 0.8s |
-| Main description | 22.0 | 0.6s |
-| Rewards | 20.0 | 0.5s |
-| Dialogs | 16.0 | 0.4s |
-| Information text | 14.0 | 0.3s |
-| Small notes | 12.0 | 0.2s |
+| Usage | Font Size | Animation Duration | Typing Speed |
+|---|---|---|---|
+| Quest title | 24.0 | 0.8s | 0.01s |
+| Main description | 22.0 | 0.6s | 0.0125s |
+| Rewards | 20.0 | 0.5s | 0.015s |
+| Dialogs | 16.0 | 0.4s | 0.0125s |
+| Information text | 14.0 | 0.3s | 0.02s |
+| Small notes | 12.0 | 0.2s | 0.025s |
 
 ## 🎯 Default Colors
 
@@ -279,6 +302,8 @@ Main Panel (Vertical Box)
 | `Create Icon Chunk` | Programmatic icon chunk creation |
 | `Check If Text Contains Tag` | Text validation and analysis |
 | `Extract Tag Content` | Content extraction from markup |
+| `Add Typing Animation` | Add typewriter effect to text blocks |
+| `Create Typing Text Block` | Create text with built-in typing animation |
 
 ## 🔧 Troubleshooting
 
@@ -305,6 +330,15 @@ Main Panel (Vertical Box)
 
 ### Problem: Custom chunks not working
 **Solution**: Use `Create Text Chunk` and `Create Icon Chunk` functions to create valid chunks, then pass them to `Create Text Chunk Widget`.
+
+### Problem: Typing animation not starting
+**Solution**: Make sure the text block is already added to the viewport before calling `Add Typing Animation` and that the widget has a valid world context.
+
+### Problem: Typing animation too fast/slow
+**Solution**: Adjust the `TypingSpeed` parameter. Smaller values (0.01s) make typing faster, larger values (0.05s) make it slower. Default is 0.0125s.
+
+### Problem: Typing animation doesn't display text
+**Solution**: Ensure the `FullText` parameter is not empty and the text block is properly initialized before applying the animation.
 
 ## 📖 Complete Examples
 
@@ -383,6 +417,49 @@ Event Begin Play
 [Create Text Chunk Widget] ──────────────────────────► [Add Child to Container]
 ```
 
+### Quest Display with Typing Animation
+
+```blueprint
+Event Begin Play
+    │
+    ▼
+[Get Quest Data By ID: "NewQuest"]
+    │
+    ▼
+[Create Typing Text Block]
+    │ Text: Quest Title
+    │ Font Size: 24.0
+    │ Is Bold: true
+    │ Text Color: Gold
+    │ Typing Speed: 0.01
+    │ Delay: 0.0
+    ▼
+[Add Child to Vertical Box: TitleContainer]
+    │
+    ▼
+[Create Typing Text Block]
+    │ Text: Quest Description
+    │ Font Size: 18.0
+    │ Is Bold: false
+    │ Text Color: White
+    │ Typing Speed: 0.0125
+    │ Delay: 2.0
+    ▼
+[Add Child to Vertical Box: DescriptionContainer]
+    │
+    ▼
+[Create BlenderPro Text Widget: "Rewards:"]
+    │ Font Size: 16.0, Is Bold: true
+    ▼
+[Add Child to Vertical Box: RewardsContainer]
+    │
+    ▼
+[Add Typing Animation]
+    │ Full Text: "• 500 Experience Points\n• 250 Credits\n• Rare Equipment"
+    │ Typing Speed: 0.015
+    │ Delay: 4.0
+```
+
 ## 🏗️ Technical Implementation
 
 ### Key Features
@@ -391,6 +468,8 @@ Event Begin Play
 - **Performance optimized** - Minimal widget creation overhead
 - **Modular design** - Each function handles specific use cases
 - **Text parsing engine** - Converts formatted strings to structured data
+- **Typing animations** - Character-by-character text reveal with customizable speed
+- **Memory-safe animations** - Proper cleanup when widgets are destroyed
 
 ### Required Assets
 - **Font**: `/Game/Widget/Fonts/BlenderPro/BlenderPro.BlenderPro`
