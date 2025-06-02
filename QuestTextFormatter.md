@@ -273,7 +273,6 @@ Event Begin Play
 
 ### Key Features
 - **No WidgetTree dependency** - Main functions work directly in Blueprints
-- **Advanced WidgetTree functions** - Available for C++ users or advanced scenarios
 - **Automatic memory management** - Uses UE5's garbage collection
 - **Performance optimized** - Minimal widget creation overhead
 - **Modular design** - Each function handles specific use cases
