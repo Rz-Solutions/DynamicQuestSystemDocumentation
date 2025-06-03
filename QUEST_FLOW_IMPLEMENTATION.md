@@ -217,10 +217,6 @@ void SelectQuest(FString QuestIDStr) {
 - **Quest System**: Requires Dynamic Quest System plugin
 - **Editor Only**: No runtime performance impact
 
-### Browser Support
-- **Unreal Editor**: 5.1+ recommended
-- **Platform**: Windows, Mac, Linux editor support
-
 ## Future Enhancements
 
 ### Planned Features
